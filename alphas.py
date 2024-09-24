@@ -65,3 +65,21 @@ def product(series, d):
 
 def stddev(series, d):
     return series.rolling(window=d).std()
+
+def alpha_1(df):
+    close = df['close']
+    returns = close.pct_change()
+    
+    condition = returns < 0
+    
+    adjusted_values = np.where(condition, stddev(returns, 20), close)
+    
+    powered_values = signedpower(adjusted_values, 2)
+    
+    argmax_values = ts_argmax(pd.Series(powered_values), 5)
+    
+    ranked_values = rank(argmax_values)
+    
+    alpha_values = ranked_values - 0.5
+    
+    return alpha_values
