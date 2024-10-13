@@ -67,7 +67,7 @@ def stddev(series, d):
     return series.rolling(window=d).std()
 
 def alpha_1(df):
-    close = df['close']
+    close = df['Close']
     returns = close.pct_change()
     
     condition = returns < 0
@@ -77,9 +77,17 @@ def alpha_1(df):
     powered_values = signedpower(adjusted_values, 2)
     
     argmax_values = ts_argmax(pd.Series(powered_values), 5)
+    print(argmax_values)
     
     ranked_values = rank(argmax_values)
     
     alpha_values = ranked_values - 0.5
     
+    return alpha_values
+
+def momentum(df):
+    close = df['Close']
+    returns = close.pct_change()
+
+    alpha_values = returns.rolling(20).sum()
     return alpha_values
